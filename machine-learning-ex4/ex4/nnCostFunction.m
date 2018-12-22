@@ -106,16 +106,40 @@ J = J + reg_term;
 
 for t = 1:m
   
- a1 = [1;, X(t,:)'];
-  
- a2 = [1: sigmoid(a1 * Theta1')]
+ a1 = [1; X(t,:)'];
  
- a3 = [1: sigmoid(a2 * Theta2')]
+ z2 = Theta1 * a1;
+ a2 = [1; sigmoid(z2)];
  
- d3 = a3 .- y
+ z3 = Theta2 * a2;
+ a3 = [sigmoid(z3)];
+ 
+ y_new = ([1:num_labels] == y(t))';
+ 
+ delta_3 = a3 .- y_new;
+ 
+ delta_2 = (Theta2' * delta_3) .* [1; sigmoidGradient(z2)];
+ 
+ delta_2 = delta_2(2:end,:);
+ 
+ Theta1_grad = Theta1_grad + delta_2 * a1';
+ 
+ Theta2_grad = Theta2_grad + (delta_3 * a2');
   
   
- end
+end
+
+
+ 
+Theta1_grad = (1/m) .* Theta1_grad;
+ 
+Theta2_grad = (1/m) .* Theta2_grad;
+
+
+Theta1_grad(:,2:end) = Theta1_grad(:, 2:end) + ((lambda/m) * Theta1(:,2:end));
+
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end)  + ((lambda/m) * Theta2(:,2:end));
+
 
 
 % =========================================================================
