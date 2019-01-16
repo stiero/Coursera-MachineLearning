@@ -20,7 +20,9 @@ S = zeros(n);
 %       number of examples).
 %
 
+covariance_matrix = (1/m) * (X' * X);
 
+[U, S, V] = svd(covariance_matrix);
 
 
 
